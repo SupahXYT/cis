@@ -19,23 +19,24 @@ ev3 = EV3Brick()
 left_motor = Motor(Port.A)
 right_motor = Motor(Port.B)
 arm = Motor(Port.C)
-# gyro = GyroSensor(Port.S1)
+gyro = GyroSensor(Port.S1)
 
 # drive = DriveBase(left_motor, right_motor)
 
 def turn_in_place(deg: int):
-    stop_deg = 20       # equivilant to a 'stopping distance'
+    stop_deg = 0 # equivilant to a 'braking distance'
     turn_complete = False 
     gyro.reset_angle(0)
 
-    left_motor.run(-300)
-    right_motor.run(300)
+    left_motor.run(-100)
+    right_motor.run(100)
     while not turn_complete:
+        print(gyro.angle())
         if (gyro.angle() < 0 and (gyro.angle() < deg + stop_deg)
         or gyro.angle() > 0 and gyro.angle() > deg - stop_deg):
             turn_complete = True
-    left_motor.brake()
-    right_motor.brake()
+    left_motor.hold()
+    right_motor.hold()
 
 import time
 def stopping_test(speed: int):
@@ -87,8 +88,8 @@ def move_distance(mm: float):
 
 
 def main():
-    # turn_in_place(360)
-    mturn(-90)
+    turn_in_place(360)
+    # mturn(-90)
     time.sleep(2)
     # move_distance(100)
 
