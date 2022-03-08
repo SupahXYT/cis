@@ -37,25 +37,6 @@ def turn_in_place(deg: int):
             turn_complete = True
     left_motor.hold()
     right_motor.hold()
-
-import time
-def stopping_test(speed: int):
-    velocity = []
-    distance_travelled = []
-    turn_complete = False 
-    left_motor.reset_angle()
-    right_angle.reset_angle()
-
-    left_motor.run()
-    right_motor.run()
-    while not turn_complete:
-        if (gyro.angle() < 0 and (gyro.angle() < deg + stop_deg)
-        or gyro.angle() > 0 and gyro.angle() > deg - stop_deg):
-            turn_complete = True
-        time.sleep(.1)
-    left_motor.brake()
-    right_motor.brake()
-
 axle_length = 115
 wheel_diamter = 55 
 
@@ -85,7 +66,6 @@ def move_distance(mm: float):
 
     left_motor.hold()
     right_motor.hold()
-
 
 def main():
     turn_in_place(360)
