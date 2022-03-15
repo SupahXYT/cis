@@ -20,6 +20,7 @@ left_motor = Motor(Port.A)
 right_motor = Motor(Port.B)
 arm = Motor(Port.C)
 gyro = GyroSensor(Port.S1)
+touch_sensor = TouchSensor(Port.S4)
 
 # drive = DriveBase(left_motor, right_motor)
 
@@ -67,12 +68,45 @@ def move_distance(mm: float):
     left_motor.hold()
     right_motor.hold()
 
-def main():
-    turn_in_place(360)
-    # mturn(-90)
-    time.sleep(2)
-    # move_distance(100)
+def impolite_bumper():
+    bumped = False 
+    left_motor.run(3000)
+    right_motor.run(3000)
+    while not bumped:
+        if touch_sensor.pressed():
+            bumped = True
 
+    left_motor.hold()
+    right_motor.hold()
+    # ev3.speaker.say("get out of the way")
+    ev3.screen.print("get out of the way")
+ 
+def correct():
+    left_motor.stop()
+    right_motor.stop()
+    left_motor.run_time(-300, 1000, wait=False)
+    right_motor.run_time(-300, 1000, wait=False)
+    time.sleep(1.2)
+    turn_in_place(90)
+
+def roomba():
+    arm.hold()
+    while True:
+        left_motor.run(300)
+        right_motor.run(300)
+        if touch_sensor.pressed():
+            correct()
+
+def main():
+    # turn_in_place(360)
+    # mturn(-90)
+    # ev3.speaker.set_volume(40)
+    # ev3.speaker.play_notes(['A4/8', 'A4/8', 'A4/16','C4/16','B4/16', 'A4/16', 
+    # 'E4/8', 'E3/8', 'E3/16', 'G3/16#', 'F3/16#', 'E'], tempo=60)
+    # impolite_bumper()
+    roomba()
+    time.sleep(10)
+    # move_distance(100)
 if __name__ == '__main__':
     main()
 
