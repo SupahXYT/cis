@@ -48,8 +48,10 @@ def mturn(theta_t: float):
     C_w = wheel_diamter * math.pi 
 
     theta_w = (theta_t*C_t)/C_w 
+    print(theta_w)
     left_motor.run_angle(200, theta_w, wait=False)
     right_motor.run_angle(200, -theta_w, wait=False)
+    time.sleep(1)
 
 wheel_circumference = math.pi * wheel_diamter
 
@@ -87,7 +89,7 @@ def correct():
     left_motor.run_time(-300, 1000, wait=False)
     right_motor.run_time(-300, 1000, wait=False)
     time.sleep(1.2)
-    turn_in_place(90)
+    mturn(90)
 
 def roomba():
     arm.hold()
@@ -97,6 +99,24 @@ def roomba():
         if touch_sensor.pressed():
             correct()
 
+from random import random 
+def randint(min, max):
+    return round((max-min)*random()+min)
+
+def proomba():
+    arm.hold()
+    while True:
+        left_motor.run(300)
+        right_motor.run(300)
+        if touch_sensor.pressed():
+            left_motor.stop()
+            right_motor.stop()
+            left_motor.run_time(-300, 1000, wait=False)
+            right_motor.run_time(-300, 1000, wait=False)
+            time.sleep(1.2)
+            direction = randint(0, 1)
+            mturn(90*direction + -90*(not direction))
+
 def main():
     # turn_in_place(360)
     # mturn(-90)
@@ -104,7 +124,7 @@ def main():
     # ev3.speaker.play_notes(['A4/8', 'A4/8', 'A4/16','C4/16','B4/16', 'A4/16', 
     # 'E4/8', 'E3/8', 'E3/16', 'G3/16#', 'F3/16#', 'E'], tempo=60)
     # impolite_bumper()
-    roomba()
+    proomba()
     time.sleep(10)
     # move_distance(100)
 if __name__ == '__main__':
