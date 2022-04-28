@@ -1,18 +1,17 @@
-from pybricks.ev3devices import ColorSensor
-from math import pi, sqrt
+from pybricks import parameters
+import math, time
 
 class ColorSensor:
  
     color_hex_map = {
-        Color.PURPLE: (0xff, 0x00, 0xff),
-        Color.BLUE: (0x00, 0x00, 0xff),
-        Color.GREEN: (0x00, 0xff, 0x00),
-        Color.YELLOW: (0xff, 0xff, 0x00),
-        Color.BROWN: (0xff, 0x86, 0x00),
-        Color.ORANGE: (0xff, 0x55, 0x00),
-        Color.RED: (0xff, 0x00, 0x00),
-        Color.BLACK: (0x00, 0x00, 0x00),
-        Color.WHITE: (0xff, 0xff, 0xff),
+        parameters.Color.BLUE: (0x00, 0x00, 0xff),
+        parameters.Color.GREEN: (0x00, 0xff, 0x00),
+        parameters.Color.YELLOW: (0xff, 0xff, 0x00),
+        parameters.Color.BROWN: (0xff, 0x86, 0x00),
+        parameters.Color.ORANGE: (0xff, 0x55, 0x00),
+        parameters.Color.RED: (0xff, 0x00, 0x00),
+        parameters.Color.BLACK: (0x00, 0x00, 0x00),
+        parameters.Color.WHITE: (0xff, 0xff, 0xff),
     }
 
     def __init__(self, color_sensor, size=10):
@@ -49,7 +48,7 @@ class ColorSensor:
         if c1 is None:
             return False
 
-        distance = sqrt( 
+        distance = math.sqrt( 
             (c2[0]-c1[0])**2 + 
             (c2[1]-c1[1])**2 + 
             (c2[2]-c1[2])**2 )
@@ -76,7 +75,7 @@ class Drive:
         self.wheel_diamter = wheel_diamter
         self.wheel_circumference = math.pi * wheel_diamter
 
-    def turn(self, theta: float):
+    def turn(self, theta_t: float):
         C_t = self.axle_length * math.pi
         C_w = self.wheel_circumference
 
@@ -92,5 +91,5 @@ class Drive:
         self.lm.run_angle(theta_wheel)
         self.rm.run_angle(theta_wheel)
 
-        left_motor.hold()
-        right_motor.hold()
+        self.lm.hold()
+        self.rm.hold()
