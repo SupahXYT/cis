@@ -6,7 +6,8 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-# import wrapper
+import time 
+import math
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -22,7 +23,7 @@ right_motor = Motor(Port.B)
 # touch_sensor = TouchSensor(Port.S3)
 us = UltrasonicSensor(Port.S1)
 
-def turn_in_place(deg: int):
+def gyro_turn(deg: int):
     stop_deg = 0 # equivilant to a 'braking distance'
     turn_complete = False 
     gyro.reset_angle(0)
@@ -39,9 +40,7 @@ def turn_in_place(deg: int):
 axle_length = 115
 wheel_diamter = 55 
 
-import time 
-import math
-def mturn(theta_t: float):
+def turn(theta_t: float):
     C_t = axle_length * math.pi
     C_w = wheel_diamter * math.pi 
 
@@ -207,7 +206,11 @@ def no_contact():
             left_motor.run(300)
             right_motor.run(300)
 
-no_contact()
+# no_contact()
 
-def test():
-    cs = ColorWrapper()
+import wrapper
+def wrapper_test():
+    cs = wrapper.ColorSensor(_cs)
+
+    while True:
+        print(cs.near_color(wrapper.Color.BLUE))

@@ -1,7 +1,5 @@
-from enum import Enum
-
-def _sqrt(n):
-    return n**1/2
+from pybricks.ev3devices import ColorSensor
+from math import pi, sqrt
 
 class ColorSensor:
  
@@ -17,11 +15,11 @@ class ColorSensor:
         Color.WHITE: (0xff, 0xff, 0xff),
     }
 
-    def __init__(self, color_sensor, size):
+    def __init__(self, color_sensor, size=10):
         self.window = []
         self.cs = color_sensor
-        if max <= 0:
-            raise ValueError("max must be greater than zero")
+        if size <= 0:
+            raise ValueError("size must be greater than zero")
         self.size = size 
 
     def _populate(self):
@@ -57,8 +55,7 @@ class ColorSensor:
             (c2[2]-c1[2])**2 )
         return (distance <= radius)
 
-class Color(Enum):
-
+class Color:
     PURPLE = (0xff, 0x00, 0xff)
     BLUE = (0x00, 0x00, 0xff)
     GREEN = (0x00, 0xff, 0x00)
@@ -68,3 +65,32 @@ class Color(Enum):
     RED = (0xff, 0x00, 0x00)
     BLACK = (0x00, 0x00, 0x00)
     WHITE = (0xff, 0xff, 0xff)
+
+class Drive:
+    def __init__(
+        self, left_motor, right_motor, 
+        axle_length=115, wheel_diamter=55):
+        self.lm = left_motor
+        self.rm = right_motor
+        self.axle_length = axle_length
+        self.wheel_diamter = wheel_diamter
+        self.wheel_circumference = math.pi * wheel_diamter
+
+    def turn(self, theta: float):
+        C_t = self.axle_length * math.pi
+        C_w = self.wheel_circumference
+
+        theta_w = (theta_t*C_t)/C_w 
+        self.lm.run_angle(200, theta_w, wait=False)
+        self.rm.run_angle(200, -theta_w, wait=False)
+
+        time.sleep(1)
+
+    def move_distance(self, mm: float):
+        self.lm.reset_angle(0)
+        theta_wheel = 360 * mm / self.wheel_circumference
+        self.lm.run_angle(theta_wheel)
+        self.rm.run_angle(theta_wheel)
+
+        left_motor.hold()
+        right_motor.hold()
