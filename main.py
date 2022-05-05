@@ -15,28 +15,28 @@ import math
 ev3 = EV3Brick()
 
 # initialize motors and sensors 
-left_motor = Motor(Port.A)
-right_motor = Motor(Port.B)
+lm = Motor(Port.A)
+rm = Motor(Port.B)
 # arm = Motor(Port.C)
 # _cs = ColorSensor(Port.S4)
 # gyro = GyroSensor(Port.S1)
 # touch_sensor = TouchSensor(Port.S3)
-us = UltrasonicSensor(Port.S1)
+# us = UltrasonicSensor(Port.S1)
 
 def gyro_turn(deg: int):
     stop_deg = 0 # equivilant to a 'braking distance'
     turn_complete = False 
     gyro.reset_angle(0)
 
-    left_motor.run(-100)
-    right_motor.run(100)
+    lm.run(-100)
+    rm.run(100)
     while not turn_complete:
         print(gyro.angle())
         if (gyro.angle() < 0 and (gyro.angle() < deg + stop_deg)
         or gyro.angle() > 0 and gyro.angle() > deg - stop_deg):
             turn_complete = True
-    left_motor.hold()
-    right_motor.hold()
+    lm.hold()
+    rm.hold()
 axle_length = 115
 wheel_diamter = 55 
 
@@ -46,45 +46,45 @@ def turn(theta_t: float):
 
     theta_w = (theta_t*C_t)/C_w 
     print(theta_w)
-    left_motor.run_angle(200, theta_w, wait=False)
-    right_motor.run_angle(200, -theta_w, wait=False)
+    lm.run_angle(200, theta_w, wait=False)
+    rm.run_angle(200, -theta_w, wait=False)
     time.sleep(1)
 
 wheel_circumference = math.pi * wheel_diamter
 
 def move_distance(mm: float):
-    left_motor.reset_angle(0)
+    lm.reset_angle(0)
     theta_wheel = 360 * mm / wheel_circumference
-    left_motor.run(100)
-    right_motor.run(100)
+    lm.run(100)
+    rm.run(100)
     print('angle to move wheel: ' + str(theta_wheel))
 
-    while left_motor.angle() < theta_wheel:
-        print(left_motor.angle())
+    while lm.angle() < theta_wheel:
+        print(lm.angle())
 
-    print('final angle: ' + str(left_motor.angle()))
+    print('final angle: ' + str(lm.angle()))
 
-    left_motor.hold()
-    right_motor.hold()
+    lm.hold()
+    rm.hold()
 
 def impolite_bumper():
     bumped = False 
-    left_motor.run(3000)
-    right_motor.run(3000)
+    lm.run(3000)
+    rm.run(3000)
     while not bumped:
         if touch_sensor.pressed():
             bumped = True
 
-    left_motor.hold()
-    right_motor.hold()
+    lm.hold()
+    rm.hold()
     # ev3.speaker.say("get out of the way")
     ev3.screen.print("get out of the way")
  
 def correct():
-    left_motor.stop()
-    right_motor.stop()
-    left_motor.run_time(-300, 1000, wait=False)
-    right_motor.run_time(-300, 1000, wait=False)
+    lm.stop()
+    rm.stop()
+    lm.run_time(-300, 1000, wait=False)
+    rm.run_time(-300, 1000, wait=False)
     time.sleep(1.2)
     mturn(90)
 
@@ -93,13 +93,13 @@ def roomba():
     ev3.speaker.say("Initiating cleaning of current space")
 
     while True:
-        left_motor.run(300)
-        right_motor.run(300)
+        lm.run(300)
+        rm.run(300)
         if touch_sensor.pressed():
-            left_motor.stop()
-            right_motor.stop()
-            left_motor.run_time(-300, 1000, wait=False)
-            right_motor.run_time(-300, 1000, wait=False)
+            lm.stop()
+            rm.stop()
+            lm.run_time(-300, 1000, wait=False)
+            rm.run_time(-300, 1000, wait=False)
             time.sleep(1.1)
             mturn(90)
 
@@ -113,13 +113,13 @@ def proomba():
     ev3.speaker.say("Must clean now clean room move clean")
 
     while True:
-        left_motor.run(300)
-        right_motor.run(300)
+        lm.run(300)
+        rm.run(300)
         if touch_sensor.pressed():
-            left_motor.stop()
-            right_motor.stop()
-            left_motor.run_time(-300, 1000, wait=False)
-            right_motor.run_time(-300, 1000, wait=False)
+            lm.stop()
+            rm.stop()
+            lm.run_time(-300, 1000, wait=False)
+            rm.run_time(-300, 1000, wait=False)
             time.sleep(1.1)
             mturn(randint(-90, 90))
 
@@ -170,8 +170,8 @@ def count_blue():
         return True
 
 def blue_yellow():
-    left_motor.run(100)
-    right_motor.run(100)
+    lm.run(100)
+    rm.run(100)
     colors.add(color_sensor.color())
     count = 0
 
@@ -187,24 +187,24 @@ def blue_yellow():
         colors.add(current_color)
     
     ev3.screen.print("Final count: " + str(count))
-    left_motor.hold()
-    right_motor.hold()
+    lm.hold()
+    rm.hold()
 
 def no_contact():
-    left_motor.run(300)
-    right_motor.run(300)
+    lm.run(300)
+    rm.run(300)
 
     while True:
         if us.distance() < 100:
-            left_motor.stop()
-            right_motor.stop()
+            lm.stop()
+            rm.stop()
 
-            left_motor.run_time(-300, 1000, wait=False)
-            right_motor.run_time(-300, 1000, wait=False)
+            lm.run_time(-300, 1000, wait=False)
+            rm.run_time(-300, 1000, wait=False)
             time.sleep(1)
             mturn(90)
-            left_motor.run(300)
-            right_motor.run(300)
+            lm.run(300)
+            rm.run(300)
 
 # no_contact()
 
@@ -214,3 +214,46 @@ def wrapper_test():
 
     while True:
         print(cs.near_color(wrapper.Color.BLUE))
+
+class Direction:
+    left = -1
+    right = 1
+
+def seek(direction, color):
+    angle_seek_limit = 90
+    gyro.reset_angle()
+
+    # seek first direction
+    lm.run(200*direction)
+    rm.run(200*-direction)
+    while gyro.angle() > direction*angle_seek_limit:
+        if cs.color() == color:
+            lm.stop()
+            rm.stop()
+            return direction
+
+    # seek second direction
+    lm.run(200*-direction)
+    rm.run(200*direction)
+    while gyro.angle() > -2*direction*angle_seek_limit:
+        if cs.color() == color:
+            pass
+
+def follow_line():
+    tape_color = wrapper.Color.BLUE
+    cs = wrapper.ColorSensor(_cs)
+    drive = wrapper.Drive(lm, rm)
+    direction = Direction.left
+    drive.run()
+
+    while True:
+        if(cs.color() == tape_color):
+            pass
+        else:
+            seek()
+
+# turn until reached  tape or limit 
+# return True
+# else turn other way 
+
+wrapper_test()
