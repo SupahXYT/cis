@@ -18,8 +18,8 @@ ev3 = EV3Brick()
 lm = Motor(Port.A)
 rm = Motor(Port.B)
 # arm = Motor(Port.C)
-# _cs = ColorSensor(Port.S4)
-# gyro = GyroSensor(Port.S1)
+_cs = ColorSensor(Port.S4)
+gyro = GyroSensor(Port.S1)
 # touch_sensor = TouchSensor(Port.S3)
 # us = UltrasonicSensor(Port.S1)
 
@@ -213,47 +213,55 @@ def wrapper_test():
     cs = wrapper.ColorSensor(_cs)
 
     while True:
-        print(cs.near_color(wrapper.Color.BLUE))
+        ev3.screen.print(cs.color())
 
+# direction enum
 class Direction:
     left = -1
     right = 1
 
 def seek(direction, color):
+    cs = wrapper.ColorSensor(_cs)
     angle_seek_limit = 90
-    gyro.reset_angle()
+    gyro.reset_angle(0)
 
     # seek first direction
-    lm.run(200*direction)
-    rm.run(200*-direction)
-    while gyro.angle() > direction*angle_seek_limit:
-        if cs.color() == color:
+    lm.run(30*direction)
+    rm.run(30*-direction)
+    while abs(gyro.angle()) < angle_seek_limit:
+        if cs.near_color(color):
             lm.stop()
             rm.stop()
+
+            lm.run(200)
+            rm.run(200)
             return direction
 
     # seek second direction
-    lm.run(200*-direction)
-    rm.run(200*direction)
-    while gyro.angle() > -2*direction*angle_seek_limit:
-        if cs.color() == color:
-            pass
+    gyro.reset_angle(0)
+    lm.run(30*-direction)
+    rm.run(30*direction)
+    while abs(gyro.angle()) < 2*angle_seek_limit:
+        if cs.near_color(color):
+            lm.stop()
+            rm.stop()
+
+            lm.run(200)
+            rm.run(200)
+            return -direction
+    return -direction
 
 def follow_line():
     tape_color = wrapper.Color.BLUE
     cs = wrapper.ColorSensor(_cs)
     drive = wrapper.Drive(lm, rm)
     direction = Direction.left
-    drive.run()
+    drive.run(200)
 
     while True:
-        if(cs.color() == tape_color):
+        if(cs.near_color(tape_color)):
             pass
         else:
-            seek()
+            direction = seek(direction, tape_color)
 
-# turn until reached  tape or limit 
-# return True
-# else turn other way 
-
-wrapper_test()
+follow_line()

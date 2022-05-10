@@ -94,9 +94,9 @@ class Drive:
         self.lm.hold()
         self.rm.hold()
 
-    def run(self, speed, wait=False):
-        self.lm.run(speed, wait=wait)
-        self.rm.run(speed, wait=wait)
+    def run(self, speed):
+        self.lm.run(speed)
+        self.rm.run(speed)
 
     def stop(self):
         self.lm.stop()
