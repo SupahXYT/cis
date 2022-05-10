@@ -6,8 +6,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-import time 
-import math
+import time, math, wrapper
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -19,6 +18,7 @@ lm = Motor(Port.A)
 rm = Motor(Port.B)
 # arm = Motor(Port.C)
 _cs = ColorSensor(Port.S4)
+cs = wrapper.ColorSensor(_cs)
 gyro = GyroSensor(Port.S1)
 # touch_sensor = TouchSensor(Port.S3)
 # us = UltrasonicSensor(Port.S1)
@@ -206,22 +206,12 @@ def no_contact():
             lm.run(300)
             rm.run(300)
 
-# no_contact()
-
-import wrapper
-def wrapper_test():
-    cs = wrapper.ColorSensor(_cs)
-
-    while True:
-        ev3.screen.print(cs.color())
-
 # direction enum
 class Direction:
     left = -1
     right = 1
 
 def seek(direction, color):
-    cs = wrapper.ColorSensor(_cs)
     angle_seek_limit = 90
     gyro.reset_angle(0)
 
@@ -253,7 +243,6 @@ def seek(direction, color):
 
 def follow_line():
     tape_color = wrapper.Color.BLUE
-    cs = wrapper.ColorSensor(_cs)
     drive = wrapper.Drive(lm, rm)
     direction = Direction.left
     drive.run(200)
