@@ -1,17 +1,17 @@
-from pybricks import parameters
+from pybricks.parameters import Color as pybricksColor
 import math, time
 
 class ColorSensor:
  
     color_hex_map = {
-        parameters.Color.BLUE: (0x00, 0x00, 0xff),
-        parameters.Color.GREEN: (0x00, 0xff, 0x00),
-        parameters.Color.YELLOW: (0xff, 0xff, 0x00),
-        parameters.Color.BROWN: (0xff, 0x86, 0x00),
-        parameters.Color.ORANGE: (0xff, 0x55, 0x00),
-        parameters.Color.RED: (0xff, 0x00, 0x00),
-        parameters.Color.BLACK: (0x00, 0x00, 0x00),
-        parameters.Color.WHITE: (0xff, 0xff, 0xff),
+        pybricksColor.BLUE: (0x00, 0x00, 0xff),
+        pybricksColor.GREEN: (0x00, 0xff, 0x00),
+        pybricksColor.YELLOW: (0xff, 0xff, 0x00),
+        pybricksColor.BROWN: (0xff, 0x86, 0x00),
+        pybricksColor.ORANGE: (0xff, 0x55, 0x00),
+        pybricksColor.RED: (0xff, 0x00, 0x00),
+        pybricksColor.BLACK: (0x00, 0x00, 0x00),
+        pybricksColor.WHITE: (0xff, 0xff, 0xff),
     }
 
     def __init__(self, color_sensor, size=10):
