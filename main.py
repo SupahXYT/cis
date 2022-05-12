@@ -19,6 +19,7 @@ rm = Motor(Port.B)
 # arm = Motor(Port.C)
 _cs = ColorSensor(Port.S4)
 cs = wrapper.ColorSensor(_cs)
+drive = wrapper.Drive(lm, rm)
 gyro = GyroSensor(Port.S1)
 # touch_sensor = TouchSensor(Port.S3)
 # us = UltrasonicSensor(Port.S1)
@@ -213,18 +214,14 @@ class Direction:
 
 def seek(direction, color):
     angle_seek_limit = 90
-    gyro.reset_angle(0)
 
     # seek first direction
+    gyro.reset_angle(0)
     lm.run(30*direction)
     rm.run(30*-direction)
     while abs(gyro.angle()) < angle_seek_limit:
         if cs.near_color(color):
-            lm.stop()
-            rm.stop()
-
-            lm.run(200)
-            rm.run(200)
+            drive.run(200)
             return direction
 
     # seek second direction
@@ -233,17 +230,12 @@ def seek(direction, color):
     rm.run(30*direction)
     while abs(gyro.angle()) < 2*angle_seek_limit:
         if cs.near_color(color):
-            lm.stop()
-            rm.stop()
-
-            lm.run(200)
-            rm.run(200)
+            drive.run(200)
             return -direction
     return -direction
 
 def follow_line():
     tape_color = wrapper.Color.BLUE
-    drive = wrapper.Drive(lm, rm)
     direction = Direction.left
     drive.run(200)
 
