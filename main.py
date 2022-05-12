@@ -6,7 +6,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-import time, math, wrapper
+import time, math, wrapper, struct
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -232,6 +232,7 @@ def seek(direction, color):
         if cs.near_color(color):
             drive.run(200)
             return -direction
+
     return -direction
 
 def follow_line():
@@ -245,4 +246,49 @@ def follow_line():
         else:
             direction = seek(direction, tape_color)
 
-follow_line()
+# follow_line()
+
+def scale(val, src, dst):
+    """
+    Scale the given value from the scale of src to the scale of dst.
+ 
+    val: float or int
+    src: tuple
+    dst: tuple
+ 
+    example: print(scale(99, (0.0, 99.0), (-1.0, +1.0)))
+    """
+    return (float(val-src[0]) / (src[1]-src[0])) * (dst[1]-dst[0])+dst[0]
+
+FORMAT = 'llHHI'
+EVENT_SIZE = struct.calcsize(FORMAT)
+
+def input_test():
+    with open("/dev/input/event4", 'rb') as input:
+        event = input.read(EVENT_SIZE)
+
+        while event:
+            (tv_sec, tv_usec, ev_type, code, value) = struct.unpack(FORMAT, event)
+
+            # if ev_type == 1:
+            #     print("begin event")
+            #     print(tv_sec)
+            #     print(tv_usec)
+            #     print(ev_type)
+            #     print(code)
+            #     print(value)
+            if ev_type == 3:
+                if code == 1: # vertical
+                    voltage = scale(value, (0, 255), (100, -100))
+                    lm.dc(voltage)
+                if code == 0: # horizontal
+                    print("begin event")
+                    print(tv_sec)
+                    print(tv_usec)
+                    print(ev_type)
+                    print(code)
+                    print(value)
+                   
+            event = input.read(EVENT_SIZE)
+
+input_test()
